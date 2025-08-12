@@ -2,6 +2,10 @@
 
 This is an algorithm visualization app made entirely in Vue.
 
+Currently supported algorithms:
+
+- CountingSort
+
 ## Project Setup
 
 ```sh
