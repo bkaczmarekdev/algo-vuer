@@ -5,6 +5,7 @@ export default abstract class AlgoState {
   output: number[]
   array: number[]
   steps: AlgoStep[] | any
+  speed: number
   currentStep: AlgoStep | null
 
   constructor(inputArray: number[]) {
@@ -12,6 +13,7 @@ export default abstract class AlgoState {
     this.array = [...inputArray]
     this.output = []
     this.steps = []
+    this.speed = 1
     this.currentStep = null
   }
   abstract generateSteps(): void
@@ -19,6 +21,9 @@ export default abstract class AlgoState {
   abstract pause(): void
   abstract reset(): void
   abstract nextStep(): void
+  abstract previousStep(): void
   abstract getSteps(): AlgoStep[]
   abstract getCurrentStep(): AlgoStep | null
+  abstract getSpeed(): number
+  abstract setSpeed(speed: number): void
 }

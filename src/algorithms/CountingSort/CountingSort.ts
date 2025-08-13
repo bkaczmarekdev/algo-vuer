@@ -22,14 +22,16 @@ export default class CountingSort extends AlgoState {
   }
 
   async run(speed: number): Promise<void> {
+    this.setSpeed(speed)
     if (this.isRunning) return
+    if (this.stepIterator == this.steps.length) {
+      this.reset()
+    }
     this.isRunning = true
 
     const baseDelay = 500
 
     while (this.stepIterator < this.steps.length && this.isRunning) {
-      console.log('Step: ', this.currentStep?.array)
-      console.log('Counting Step: ', this.currentCountingStep?.array)
       let step = this.steps[this.stepIterator]
       if (step.countStep) {
         this.currentCountingStep = step.countStep
@@ -38,8 +40,7 @@ export default class CountingSort extends AlgoState {
         this.currentStep = step.outputStep
       }
       this.stepIterator++
-
-      await this.sleep(baseDelay / speed)
+      await this.sleep(baseDelay / this.getSpeed())
     }
 
     this.isRunning = false
@@ -49,6 +50,13 @@ export default class CountingSort extends AlgoState {
     let max = Math.max(...this.input)
     this.counts = Array(max + 1).fill(0)
     for (let i = 0; i < this.input.length; i++) {
+      this.steps.push({
+        countStep: {
+          array: [...this.counts],
+          workingIndex: this.input[i],
+        } as AlgoStep,
+        outputStep: null,
+      } as DoubleStep)
       this.counts[this.input[i]]++
     }
 
@@ -114,6 +122,19 @@ export default class CountingSort extends AlgoState {
     this.stepIterator++
   }
 
+  previousStep(): void {
+    if (this.stepIterator <= 0) return
+
+    this.stepIterator--
+    let step = this.steps[this.stepIterator]
+    if (step.countStep) {
+      this.currentCountingStep = step.countStep
+    }
+    if (step.outputStep) {
+      this.currentStep = step.outputStep
+    }
+  }
+
   getSteps(): AlgoStep[] {
     return this.steps
   }
@@ -124,5 +145,13 @@ export default class CountingSort extends AlgoState {
 
   getCurrentCountingStep(): AlgoStep | null {
     return this.currentCountingStep
+  }
+
+  getSpeed(): number {
+    return this.speed
+  }
+
+  setSpeed(speed: number): void {
+    this.speed = speed
   }
 }
